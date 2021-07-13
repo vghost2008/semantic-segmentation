@@ -1,0 +1,8 @@
+train:
+
+inference:
+python -m torch.distributed.launch --nproc_per_node=1 train.py --dataset cityscapes --cv 0 --syncbn --apex --fp16 --bs_val 2 --eval val --n_scales 0.1 --snapshot ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth --arch ocrnet.HRNet_Mscale --result_dir logs/eval_cityscapes/hypersonic-hedgehog_2021.07.12_08.32
+
+dump images:
+python -m torch.distributed.launch --nproc_per_node=1 train.py --dataset cityscapes --cv 0 --syncbn --apex --fp16 --bs_val 1 --eval val --dump_assets --dump_all_images --n_scales 0.1 --snapshot ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth --arch ocrnet.HRNet_Mscale --result_dir logs/dump_cityscapes/wild-lizard_2021.07.12_08.38 
+

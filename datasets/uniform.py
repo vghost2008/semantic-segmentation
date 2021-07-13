@@ -42,7 +42,6 @@ import sys
 import os
 import json
 import numpy as np
-
 import torch
 
 from collections import defaultdict
@@ -119,7 +118,7 @@ def class_centroids_image(item, tile_size, num_classes, id2trainid):
                 binary_mask[binary_mask >= 1] = 1
                 mask[binary_mask] = gtCoarse[binary_mask]
             mask[binary_mask] = v
-
+    #计算每一个patch中每一个类别的centroid(质心), 也就是说如果一个patch中类别的数量更多，那么相应的image在centroids中出现的频率也更高
     for x_offs, y_offs in tile_locations:
         patch = mask[y_offs:y_offs + tile_size, x_offs:x_offs + tile_size]
         for class_id in range(num_classes):
@@ -153,7 +152,9 @@ def pooled_class_centroids_all(items, num_classes, id2trainid, tile_size=1024):
                                    tile_size=tile_size)
 
     centroids = defaultdict(list)
+    #wj
     new_centroids = pool.map(class_centroids_item, items)
+    #new_centroids = list(map(class_centroids_item, items))
     pool.close()
     pool.join()
 
@@ -285,7 +286,7 @@ def build_epoch(imgs, centroids, num_classes, train):
       imgs - list of imgs
       centroids - list of class centroids
       num_classes - number of classes
-      class_uniform_pct: % of uniform images in one epoch
+      class_uniform_pct: % of uniform images in one epoch( 类别均衡的采样比例，其它的使用常规的采样方法)
     Outputs:
       imgs - list of images to use this epoch
     """
