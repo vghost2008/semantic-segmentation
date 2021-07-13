@@ -208,7 +208,15 @@ class MscaleOCR(nn.Module):
         Output:
           If training, return loss, else return prediction + attention
         """
-        x_1x = inputs['images']
+        #wj
+        #x_1x = inputs['images']
+        if isinstance(inputs,dict):
+            x_1x = inputs['images']
+            return_list = False
+        else:
+            x_1x = inputs
+            return_list = True
+
 
         assert 1.0 in scales, 'expected 1.0 to be the target scale'
         # Lower resolution provides attention for higher rez predictions,
@@ -259,6 +267,9 @@ class MscaleOCR(nn.Module):
             return loss
         else:
             output_dict['pred'] = pred
+            #wj
+            if return_list:
+                return pred
             return output_dict
 
     def two_scale_forward(self, inputs):

@@ -379,6 +379,7 @@ def main():
     if args.fp16:
         net, optim = amp.initialize(net, optim, opt_level=args.amp_opt_level)
 
+    #wj
     net = network.wrap_network_in_dataparallel(net, args.apex)
 
     if args.summary:
@@ -557,6 +558,7 @@ def validate(val_loader, net, criterion, optim, epoch,
     net.eval()
     val_loss = AverageMeter()
     iou_acc = 0
+    logx.tb_writer.add_graph(net,input_to_model=torch.zeros([1,3,256,256],device=torch.device('cuda')))
 
     for val_idx, data in enumerate(val_loader):
         input_images, labels, img_names, _ = data 

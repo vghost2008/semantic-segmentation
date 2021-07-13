@@ -29,7 +29,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
+            //"args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
+            "args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
         }
     ]
 }
