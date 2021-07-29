@@ -511,3 +511,39 @@ def fmt_scale(prefix, scale):
     scale_str = str(float(scale))
     scale_str.replace('.', '')
     return f'{prefix}_{scale_str}x'
+
+def show_list(values,fmt=None,recurse=False):
+    if values is None:
+        return
+    if isinstance(values,str):
+        return show_list([values])
+    print("[")
+    if fmt is None:
+        for v in values:
+            if recurse and isinstance(v,(list,tuple)):
+                show_list(v)
+            else:
+                print(v)
+    else:
+        for v in values:
+            if recurse and isinstance(v,(list,tuple)):
+                show_list(v)
+            else:
+                print(fmt%v)
+
+    print("]")
+
+def log_all_variable(tb,net:torch.nn.Module,global_step):
+    for name,param in net.named_parameters():
+        if param.numel()>1:
+            tb.add_histogram(name,param,global_step)
+        else:
+            tb.add_scalar(name,param,global_step)
+    data =  net.state_dict()
+    for name in data:
+        if "running" in name:
+            param = data[name]
+            if param.numel()>1:
+                tb.add_histogram("BN_"+name,param,global_step)
+            else:
+                tb.add_scalar("BN"+name,param,global_step)

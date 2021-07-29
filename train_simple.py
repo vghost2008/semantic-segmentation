@@ -52,6 +52,8 @@ import network
 # Import autoresume module
 sys.path.append(os.environ.get('SUBMIT_SCRIPTS', '.'))
 AutoResume = None
+os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
+
 try:
     from userlib.auto_resume import AutoResume
 except ImportError:
@@ -558,7 +560,8 @@ def validate(val_loader, net, criterion, optim, epoch,
     net.eval()
     val_loss = AverageMeter()
     iou_acc = 0
-    logx.tb_writer.add_graph(net,input_to_model=torch.zeros([1,3,256,256],device=torch.device('cuda')))
+    #wj
+    #logx.tb_writer.add_graph(net,input_to_model=torch.zeros([1,3,256,256],device=torch.device('cuda')))
 
     for val_idx, data in enumerate(val_loader):
         input_images, labels, img_names, _ = data 

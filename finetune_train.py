@@ -29,7 +29,8 @@ POSSIBILITY OF SUCH DAMAGE.
 """
 from __future__ import absolute_import
 from __future__ import division
-
+from math import log
+from utils.misc import log_all_variable
 import argparse
 import os
 import sys
@@ -44,7 +45,7 @@ from utils.misc import ImageDumper
 from utils.trnval_utils import eval_minibatch, validate_topn
 from loss.utils import get_loss
 from loss.optimizer import get_optimizer, restore_opt, restore_net
-
+import torch.nn as nn
 import datasets
 import network
 
@@ -58,11 +59,12 @@ except ImportError:
     print(AutoResume)
 
 #wj
-#os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
+os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
+#os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 
 # Argument Parser
 parser = argparse.ArgumentParser(description='Semantic Segmentation')
-parser.add_argument('--lr', type=float, default=0.002)
+parser.add_argument('--lr', type=float, default=0.001)
 parser.add_argument('--arch', type=str, default='deepv3.DeepWV3Plus',
                     help='Network architecture. We have DeepSRNX50V3PlusD (backbone: ResNeXt50) \
                     and deepWV3Plus (backbone: WideResNet38).')
@@ -167,6 +169,8 @@ parser.add_argument('--exp', type=str, default='default',
 parser.add_argument('--result_dir', type=str, default='./logs',
                     help='where to write log output')
 parser.add_argument('--syncbn', action='store_true', default=False,
+                    help='Use Synchronized BN')
+parser.add_argument('--frozzen_bn', action='store_true', default=False,
                     help='Use Synchronized BN')
 parser.add_argument('--dump_augmentation_images', action='store_true', default=False,
                     help='Dump Augmentated Images for sanity check')
@@ -332,6 +336,7 @@ def main():
         AutoResume.init()
 
     assert args.result_dir is not None, 'need to define result_dir arg'
+    print(f"Log dir {args.result_dir}")
     logx.initialize(logdir=args.result_dir,
                     tensorboard=True, hparams=vars(args),
                     global_rank=args.global_rank)
@@ -378,8 +383,42 @@ def main():
         logx.msg(msg)
 
     net = network.get_net(args, criterion)
+
+    net.train()
+    names_to_train = ['ocr.cls_head','ocr.aux_head',"scale_attn"]
+    for name, param in net.named_parameters():
+        v = False
+        for x in names_to_train:
+            if x in name:
+                v = True
+                break
+        if v:
+            continue
+        print(name,param.size())
+        param.requires_grad = False
+    num_classes = cfg.DATASET.NUM_CLASSES
+    '''net.ocr.cls_head = nn.Conv2d(
+            512, num_classes, kernel_size=1, stride=1, padding=0,
+            bias=True)
+    net.ocr.aux_head[2] = nn.Conv2d(
+            720, num_classes, kernel_size=1, stride=1, padding=0,
+            bias=True)
+    net.scale_attn.conv2 = nn.Conv2d(
+            256, 1, kernel_size=1, stride=1, padding=0,
+            bias=True)
+    net.scale_attn.conv2 = nn.Conv2d(
+            256, 1, kernel_size=1, stride=1, padding=0,
+            bias=True)'''
+
     print(net)
-    optim, scheduler = get_optimizer(args, net)
+    param_to_update = []
+    print("Training parameters.")
+    for name, param in net.named_parameters():
+        if param.requires_grad:
+            print(name,list(param.size()))
+            param_to_update.append(param)
+
+    optim, scheduler = get_optimizer(args, net,parameters=param_to_update)
 
     if args.fp16:
         net, optim = amp.initialize(net, optim, opt_level=args.amp_opt_level)
@@ -404,30 +443,16 @@ def main():
         net.module.init_mods()
 
     torch.cuda.empty_cache()
+    print(net)
 
     if args.start_epoch != 0:
         scheduler.step(args.start_epoch)
 
-    # There are 4 options for evaluation:
-    #  --eval val                           just run validation
-    #  --eval val --dump_assets             dump all images and assets
-    #  --eval folder                        just dump all basic images
-    #  --eval folder --dump_assets          dump all images and assets
     if args.eval == 'val':
-
-        if args.dump_topn:
-            validate_topn(val_loader, net, criterion_val, optim, 0, args)
-        else:
-            validate(val_loader, net, criterion=criterion_val, optim=optim, epoch=0,
-                     dump_assets=args.dump_assets,
-                     dump_all_images=args.dump_all_images,
-                     calc_metrics=not args.no_metrics)
+        assert False,"ERROR"
         return 0
     elif args.eval == 'folder':
-        # Using a folder for evaluation means to not calculate metrics
-        validate(val_loader, net, criterion=None, optim=None, epoch=0,
-                 calc_metrics=False, dump_assets=args.dump_assets,
-                 dump_all_images=True)
+        assert False,"ERROR"
         return 0
     elif args.eval is not None:
         raise 'unknown eval option {}'.format(args.eval)
@@ -457,13 +482,17 @@ def main():
         if args.apex:
             train_loader.sampler.set_epoch(epoch + 1)
 
-        if epoch % args.val_freq == 0:
-            validate(val_loader, net, criterion_val, optim, epoch)
+        #wj
+        '''if epoch % args.val_freq == 0:
+            validate(val_loader, net, criterion_val, optim, epoch)'''
 
         scheduler.step()
 
         if check_termination(epoch):
             return 0
+
+    #wj
+    validate(val_loader, net, criterion_val, optim, epoch)
 
 
 def train(train_loader, net, optim, curr_epoch):
@@ -475,7 +504,29 @@ def train(train_loader, net, optim, curr_epoch):
     curr_epoch: current epoch
     return:
     """
+    #wj
     net.train()
+
+    '''def set_bn_eval(m):
+        ms = list(m.modules())
+        print(ms)
+        if len(ms) == 1:
+            if isinstance(ms[0],nn.BatchNorm2d):
+                ms[0].eval()
+        elif len(ms)>1:
+            for lm in ms:
+                set_bn_eval(lm)
+        elif len(ms)==0:
+            if isinstance(m,nn.BatchNorm2d):
+                m.eval()
+
+    set_bn_eval(net)'''
+    _nr = 0
+    for ms in net.modules():
+        if isinstance(ms,nn.BatchNorm2d):
+            ms.eval()
+            _nr += 1
+    print(f"Total freeze {_nr} batch normal layers.")
 
     train_main_loss = AverageMeter()
     start_time = None
@@ -511,6 +562,11 @@ def train(train_loader, net, optim, curr_epoch):
             main_loss.backward()
 
         optim.step()
+        if i%500 == 0:
+            if logx.tb_writer is not None:
+                print("save log.")
+                log_all_variable(logx.tb_writer,net,curr_epoch*len(train_loader)+i)
+
 
         if i >= warmup_iter:
             curr_time = time.time()

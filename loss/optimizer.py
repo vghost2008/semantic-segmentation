@@ -38,13 +38,23 @@ from runx.logx import logx
 
 from config import cfg
 from loss.radam import RAdam
+from utils.misc import show_list
 
 
-def get_optimizer(args, net):
+def get_optimizer(args, net,parameters=None):
     """
     Decide Optimizer (Adam or SGD)
     """
-    param_groups = net.parameters()
+    if parameters is None:
+        param_groups = net.parameters()
+    else:
+        param_groups = parameters
+    param_groups = list(param_groups)
+
+    all_shapes = [x.size() for x in param_groups]
+    print("Parms to train:")
+    show_list(all_shapes)
+    print(f"Total num params to train {len(param_groups)}")
 
     if args.optimizer == 'sgd':
         optimizer = optim.SGD(param_groups,
@@ -147,6 +157,7 @@ def forgiving_state_restore(net, loaded_dict):
         new_k = k
         if new_k in loaded_dict and net_state_dict[k].size() == loaded_dict[new_k].size():
             new_loaded_dict[k] = loaded_dict[new_k]
+            print(f"Restore {k}.")
         else:            
             logx.msg("Skipped loading parameter {}".format(k))
     net_state_dict.update(new_loaded_dict)

@@ -13,3 +13,12 @@ start,start/step,0,timestamp,1626161505.4210916
 start,start/step,0,timestamp,1626161742.613727
 start,start/step,0,timestamp,1626161796.8025312
 start,start/step,0,timestamp,1626162636.072874
+start,start/step,0,timestamp,1626406012.7939622
+start,start/step,0,timestamp,1626407876.8260007
+start,start/step,0,timestamp,1626407946.1832855
+start,start/step,0,timestamp,1626408073.4365122
+start,start/step,0,timestamp,1626410261.4588935
+start,start/step,0,timestamp,1626410284.4894402
+start,start/step,0,timestamp,1626411088.1285012
+val,loss,0.13682897390425205,mean_iu,0.8598529321755821,acc_cls,0.9234731604201593,acc,0.9738290729272308,epoch,0,timestamp,1626411356.881843
+start,start/step,0,timestamp,1626424684.1412516

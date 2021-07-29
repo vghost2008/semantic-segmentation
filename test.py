@@ -379,10 +379,6 @@ def main():
 
     net = network.get_net(args, criterion)
     print(net)
-    optim, scheduler = get_optimizer(args, net)
-
-    if args.fp16:
-        net, optim = amp.initialize(net, optim, opt_level=args.amp_opt_level)
 
     net = network.wrap_network_in_dataparallel(net, args.apex)
 
@@ -395,8 +391,6 @@ def main():
         print(f'macs {macs} params {params}')
         sys.exit()
 
-    if args.restore_optimizer:
-        restore_opt(optim, checkpoint)
     if args.restore_net:
         restore_net(net, checkpoint)
 
@@ -404,10 +398,6 @@ def main():
         net.module.init_mods()
 
     torch.cuda.empty_cache()
-
-    if args.start_epoch != 0:
-        scheduler.step(args.start_epoch)
-
     # There are 4 options for evaluation:
     #  --eval val                           just run validation
     #  --eval val --dump_assets             dump all images and assets
@@ -431,110 +421,8 @@ def main():
         return 0
     elif args.eval is not None:
         raise 'unknown eval option {}'.format(args.eval)
+    print(f"ERROR: only for eval.")
 
-    for epoch in range(args.start_epoch, args.max_epoch):
-        update_epoch(epoch)
-
-        if args.only_coarse:
-            train_obj.only_coarse()
-            train_obj.build_epoch()
-            if args.apex:
-                train_loader.sampler.set_num_samples()
-
-        elif args.class_uniform_pct:
-            if epoch >= args.max_cu_epoch:
-                train_obj.disable_coarse()
-                train_obj.build_epoch()
-                if args.apex:
-                    train_loader.sampler.set_num_samples()
-            else:
-                train_obj.build_epoch()
-        else:
-            pass
-
-        train(train_loader, net, optim, epoch)
-
-        if args.apex:
-            train_loader.sampler.set_epoch(epoch + 1)
-
-        if epoch % args.val_freq == 0:
-            validate(val_loader, net, criterion_val, optim, epoch)
-
-        scheduler.step()
-
-        if check_termination(epoch):
-            return 0
-
-
-def train(train_loader, net, optim, curr_epoch):
-    """
-    Runs the training loop per epoch
-    train_loader: Data loader for train
-    net: thet network
-    optimizer: optimizer
-    curr_epoch: current epoch
-    return:
-    """
-    net.train()
-
-    train_main_loss = AverageMeter()
-    start_time = None
-    warmup_iter = 10
-
-    for i, data in enumerate(train_loader):
-        if i <= warmup_iter:
-            start_time = time.time()
-        # inputs = (bs,3,713,713)
-        # gts    = (bs,713,713)
-        images, gts, _img_name, scale_float = data
-        batch_pixel_size = images.size(0) * images.size(2) * images.size(3)
-        images, gts, scale_float = images.cuda(), gts.cuda(), scale_float.cuda()
-        inputs = {'images': images, 'gts': gts}
-
-        optim.zero_grad()
-        main_loss = net(inputs)
-
-        if args.apex:
-            log_main_loss = main_loss.clone().detach_()
-            torch.distributed.all_reduce(log_main_loss,
-                                         torch.distributed.ReduceOp.SUM)
-            log_main_loss = log_main_loss / args.world_size
-        else:
-            main_loss = main_loss.mean()
-            log_main_loss = main_loss.clone().detach_()
-
-        train_main_loss.update(log_main_loss.item(), batch_pixel_size)
-        if args.fp16:
-            with amp.scale_loss(main_loss, optim) as scaled_loss:
-                scaled_loss.backward()
-        else:
-            main_loss.backward()
-
-        optim.step()
-
-        if i >= warmup_iter:
-            curr_time = time.time()
-            batches = i - warmup_iter + 1
-            batchtime = (curr_time - start_time) / batches
-        else:
-            batchtime = 0
-
-        msg = ('[epoch {}], [iter {} / {}], [train main loss {:0.6f}],'
-               ' [lr {:0.6f}] [batchtime {:0.3g}]')
-        msg = msg.format(
-            curr_epoch, i + 1, len(train_loader), train_main_loss.avg,
-            optim.param_groups[-1]['lr'], batchtime)
-        logx.msg(msg)
-
-        metrics = {'loss': train_main_loss.avg,
-                   'lr': optim.param_groups[-1]['lr']}
-        curr_iter = curr_epoch * len(train_loader) + i
-        logx.metric('train', metrics, curr_iter)
-
-        if i >= 10 and args.test_mode:
-            del data, inputs, gts
-            return
-        del data
 
 
 def validate(val_loader, net, criterion, optim, epoch,

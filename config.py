@@ -42,6 +42,7 @@ import torch
 
 from utils.attr_dict import AttrDict
 from runx.logx import logx
+import torch.nn as nn
 
 
 __C = AttrDict()
@@ -83,7 +84,7 @@ __C.DATASET.CENTROID_ROOT = \
 #SDC Augmented Cityscapes Dir Location
 __C.DATASET.CITYSCAPES_AUG_DIR = ''
 #Mapillary Dataset Dir Location
-__C.DATASET.MAPILLARY_DIR = os.path.join(__C.ASSETS_PATH, 'data/Mapillary/data')
+__C.DATASET.MAPILLARY_DIR = "/home/wj/ai/mldata/mapillary_vistas"
 #Kitti Dataset Dir Location
 __C.DATASET.KITTI_DIR = ''
 #SDC Augmented Kitti Dataset Dir Location

@@ -58,6 +58,12 @@ class BaseLoader(data.Dataset):
         self.all_imgs = None
         self.drop_mask = np.zeros((1024, 2048))
         self.drop_mask[15:840, 14:2030] = 1.0
+        print("joint_transform_list:")
+        print(joint_transform_list)
+        print("img transform:")
+        print(img_transform)
+        print("label transform:")
+        print(label_transform)
 
     def build_epoch(self):
         """
@@ -181,7 +187,6 @@ class BaseLoader(data.Dataset):
                 binary_mask[binary_mask >= 1] = 1
                 mask[binary_mask] = gtCoarse[binary_mask]
             mask[binary_mask] = v
-
 
         mask = Image.fromarray(mask.astype(np.uint8))
         return img, mask, img_name

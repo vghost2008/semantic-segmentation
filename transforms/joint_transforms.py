@@ -439,6 +439,8 @@ class RandomSizeAndCrop(object):
         self.scale_max = scale_max
         self.full_size = full_size
         self.pre_size = pre_size
+        if self.pre_size is not None:
+            print(f"RandomSizeAndCrop pre size is: {self.pre_size}.")
 
     def __call__(self, img, mask, centroid=None):
         assert img.size == mask.size

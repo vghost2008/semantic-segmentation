@@ -168,6 +168,8 @@ class MscaleOCR(nn.Module):
             in_ch=cfg.MODEL.OCR.MID_CHANNELS, out_ch=1)
 
     def _fwd(self, x):
+        #wj
+        #print(x.size())
         x_size = x.size()[2:]
 
         _, _, high_level_features = self.backbone(x)
@@ -283,6 +285,8 @@ class MscaleOCR(nn.Module):
         """
         assert 'images' in inputs
         x_1x = inputs['images']
+        #wj
+        #print(x_1x.size())
 
         x_lo = ResizeX(x_1x, cfg.MODEL.MSCALE_LO_SCALE)
         lo_outs = self._fwd(x_lo)
