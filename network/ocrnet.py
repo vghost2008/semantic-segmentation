@@ -349,9 +349,18 @@ class MscaleOCR(nn.Module):
         return self.two_scale_forward(inputs)
 
 
+class InferenceMscaleOCR(MscaleOCR):
+    def forward(self,inputs):
+        mask = super().forward(inputs)
+        _,mask = mask.max(1)
+        return mask
+
 def HRNet(num_classes, criterion):
     return OCRNet(num_classes, trunk='hrnetv2', criterion=criterion)
 
 
 def HRNet_Mscale(num_classes, criterion):
     return MscaleOCR(num_classes, trunk='hrnetv2', criterion=criterion)
+
+def InferenceHRNet_Mscale(num_classes, criterion):
+    return InferenceMscaleOCR(num_classes, trunk='hrnetv2', criterion=criterion)

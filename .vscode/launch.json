@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: normal",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+        },
+        {
             "name": "Python: eval dir",
             "type": "python",
             "request": "launch",
@@ -53,10 +60,38 @@
             "name": "Python: Inference",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "test.py",
             "console": "integratedTerminal",
             //"args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
             "args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
-        }
+        },
+        {
+            "name": "Python: Inference boe",
+            "type": "python",
+            "request": "launch",
+            "justMyCode": false,
+            "program": "test.py",
+            "console": "integratedTerminal",
+            //"args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
+            "args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--bs_val" "1" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_boe/ocrnet.HRNet_Mscale_honored-boe"]
+        },
+        {
+            "name": "Python: eval boe dir",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "console": "integratedTerminal",
+            "args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--bs_val" "1" "--eval" "folder" "--dump_assets" "--dump_all_images" "--n_scales" "0.5,1.0,2.0" "--snapshot" "logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folder"  "--eval_folder" "/home/wj/ai/0day/a" ]
+            //"args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--bs_val" "1" "--eval" "folder" "--dump_assets" "--dump_all_images" "--n_scales" "0.5,1.0,2.0" "--snapshot" "logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folder"  "--eval_folder" "/home/wj/ai/mldata/txc_park_videos/videos_rgb_10" ]
+        },
+        {
+            "name": "Python: eval boe dir1",
+            "type": "python",
+            "request": "launch",
+            "program": "predict_on_imgs.py",
+            "console": "integratedTerminal",
+            //"args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--bs_val" "1" "--eval" "folder" "--dump_assets" "--dump_all_images" "--n_scales" "0.5,1.0,2.0" "--snapshot" "logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folder"  "--eval_folder" "/home/wj/ai/0day/c" ]
+            "args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--bs_val" "1" "--eval" "folder" "--dump_assets" "--dump_all_images" "--n_scales" "0.5,1.0,2.0" "--snapshot" "logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth" "--result_dir" "logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folder"  "--eval_folder" "/home/wj/ai/0day/a" ]
+        },
     ]
 }

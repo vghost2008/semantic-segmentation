@@ -58,7 +58,7 @@ except ImportError:
     print(AutoResume)
 
 #wj
-#os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
+os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
 
 # Argument Parser
 parser = argparse.ArgumentParser(description='Semantic Segmentation')
@@ -406,9 +406,9 @@ def main():
     if args.eval == 'val':
 
         if args.dump_topn:
-            validate_topn(val_loader, net, criterion_val, optim, 0, args)
+            validate_topn(val_loader, net, criterion_val, None, 0, args)
         else:
-            validate(val_loader, net, criterion=criterion_val, optim=optim, epoch=0,
+            validate(val_loader, net, criterion=criterion_val, optim=None, epoch=0,
                      dump_assets=args.dump_assets,
                      dump_all_images=args.dump_all_images,
                      calc_metrics=not args.no_metrics)
@@ -453,6 +453,7 @@ def validate(val_loader, net, criterion, optim, epoch,
 
     for val_idx, data in enumerate(val_loader):
         input_images, labels, img_names, _ = data 
+        print(input_images.size)
         if args.dump_for_auto_labelling or args.dump_for_submission:
             submit_fn = '{}.png'.format(img_names[0])
             if val_idx % 20 == 0:

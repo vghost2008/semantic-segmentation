@@ -73,12 +73,7 @@ def scale_as(x, y):
     '''
     y_size = y.size(2), y.size(3)
 
-    if cfg.OPTIONS.TORCH_VERSION >= 1.5:
-        x_scaled = torch.nn.functional.interpolate(
-            x, size=y_size, mode='bilinear',
-            align_corners=align_corners)
-    else:
-        x_scaled = torch.nn.functional.interpolate(
+    x_scaled = torch.nn.functional.interpolate(
             x, size=y_size, mode='bilinear',
             align_corners=align_corners)
     return x_scaled
@@ -88,14 +83,9 @@ def DownX(x, scale_factor):
     '''
     scale x to the same size as y
     '''
-    if cfg.OPTIONS.TORCH_VERSION >= 1.5:
-        x_scaled = torch.nn.functional.interpolate(
+    x_scaled = torch.nn.functional.interpolate(
             x, scale_factor=scale_factor, mode='bilinear',
             align_corners=align_corners, recompute_scale_factor=True)
-    else:
-        x_scaled = torch.nn.functional.interpolate(
-            x, scale_factor=scale_factor, mode='bilinear',
-            align_corners=align_corners)
     return x_scaled
 
 
@@ -103,12 +93,7 @@ def ResizeX(x, scale_factor):
     '''
     scale x by some factor
     '''
-    if cfg.OPTIONS.TORCH_VERSION >= 1.5:
-        x_scaled = torch.nn.functional.interpolate(
+    x_scaled = torch.nn.functional.interpolate(
             x, scale_factor=scale_factor, mode='bilinear',
             align_corners=align_corners, recompute_scale_factor=True)
-    else:
-        x_scaled = torch.nn.functional.interpolate(
-            x, scale_factor=scale_factor, mode='bilinear',
-            align_corners=align_corners)
     return x_scaled

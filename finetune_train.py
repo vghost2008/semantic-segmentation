@@ -59,7 +59,7 @@ except ImportError:
     print(AutoResume)
 
 #wj
-os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
+#os.environ['CUDA_VISIBLE_DEVICES'] = "1,2,3"
 #os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 
 # Argument Parser
@@ -485,6 +485,17 @@ def main():
         #wj
         '''if epoch % args.val_freq == 0:
             validate(val_loader, net, criterion_val, optim, epoch)'''
+        #wj
+        save_dict = {
+            'epoch': epoch,
+            'arch': args.arch,
+            'num_classes': cfg.DATASET_INST.num_classes,
+            'state_dict': net.state_dict(),
+            'optimizer': optim.state_dict(),
+            'mean_iu': 0,
+            'command': ' '.join(sys.argv[1:])
+        }
+        logx.save_model(save_dict, metric=0, epoch=epoch)
 
         scheduler.step()
 

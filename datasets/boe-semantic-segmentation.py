@@ -2,8 +2,9 @@
 BOE Semantic segmentation Dataset Loader
 """
 import os
+import os.path as osp
 import json
-
+import numpy as np
 from config import cfg
 from runx.logx import logx
 from datasets.base_loader import BaseLoader
@@ -122,6 +123,13 @@ class Loader(BaseLoader):
         self.trainid_to_name
         self.color_mapping
         """
+        if not osp.exists(config_fn):
+            print(f"Find file {config_fn} faild, use random color.")
+            colormap = np.random.rand(255*3)*255
+            colormap = colormap.astype(np.uint8)
+            self.color_mapping = colormap
+            return
+
         with open(config_fn) as config_file:
             config = json.load(config_file)
         config_labels = config['labels']

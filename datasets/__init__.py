@@ -122,6 +122,13 @@ def setup_loaders(args):
 
     if args.eval == 'folder':
         val_joint_transform_list = None
+        if 'boe-semantic-segmentation' in args.dataset:
+            if args.pre_size is None:
+                eval_size = 2048
+            else:
+                eval_size = args.pre_size
+            val_joint_transform_list = [
+                    joint_transforms.Scale(eval_size)]
     elif 'mapillary' in args.dataset:
         if args.pre_size is None:
             eval_size = 2177
@@ -133,6 +140,13 @@ def setup_loaders(args):
                 joint_transforms.CenterCropPad(eval_size)]
         else:
             val_joint_transform_list = [
+                joint_transforms.Scale(eval_size)]
+    elif 'boe-semantic-segmentation' in args.dataset:
+        if args.pre_size is None:
+            eval_size = 2048
+        else:
+            eval_size = args.pre_size
+        val_joint_transform_list = [
                 joint_transforms.Scale(eval_size)]
     else:
         val_joint_transform_list = None
@@ -155,6 +169,10 @@ def setup_loaders(args):
         img_transform=val_input_transform,
         label_transform=target_transform,
         eval_folder=args.eval_folder)
+    print(f'Val transform')
+    print(val_joint_transform_list)
+    print(val_input_transform)
+    print(target_transform)
 
     update_dataset_inst(dataset_inst=val_set)
 

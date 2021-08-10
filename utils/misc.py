@@ -149,7 +149,7 @@ def eval_metrics(iou_acc, args, net, optim, val_loss, epoch, mf_score=None):
         'arch': args.arch,
         'num_classes': cfg.DATASET_INST.num_classes,
         'state_dict': net.state_dict(),
-        'optimizer': optim.state_dict(),
+        'optimizer': optim.state_dict() if optim is not None else "",
         'mean_iu': mean_iu,
         'command': ' '.join(sys.argv[1:])
     }
@@ -225,7 +225,8 @@ class ImageDumper():
         self.val_len = val_len
         self.tensorboard = tensorboard
         self.write_webpage = write_webpage
-        self.webpage_fn = os.path.join(cfg.RESULT_DIR,
+        if cfg.RESULT_DIR is not None:
+            self.webpage_fn = os.path.join(cfg.RESULT_DIR,
                                        'best_images', webpage_fn)
         self.dump_assets = dump_assets
         self.dump_for_auto_labelling = dump_for_auto_labelling
@@ -276,7 +277,7 @@ class ImageDumper():
         self.imgs_to_tensorboard = []
         self.imgs_to_webpage = []
 
-    def dump(self, dump_dict, val_idx):
+    def dump(self, dump_dict, val_idx,colorize_mask_fn=None):
         """
         dump a single batch of images
 
@@ -297,7 +298,8 @@ class ImageDumper():
         else:
             pass
 
-        colorize_mask_fn = cfg.DATASET_INST.colorize_mask
+        if colorize_mask_fn is None:
+            colorize_mask_fn = cfg.DATASET_INST.colorize_mask
         idx = 0  # only use first element of batch
 
         input_image = dump_dict['input_images'][idx]

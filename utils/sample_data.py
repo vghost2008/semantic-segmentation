@@ -26,4 +26,4 @@ def sample_dirs(dir_path,save_dir,nr=10):
             sample_dir(path,save_dir,nr)
 
 if __name__ == "__main__":
-    sample_dirs("/home/wj/ai/mldata/txc_park_videos/videos_rgb","/home/wj/ai/mldata/txc_park_videos/videos_rgb_10")
+    sample_dirs("/home/wj/ai/mldata/txc_park_videos/videos_rgb","/home/wj/ai/mldata/txc_park_videos/videos_rgb_15",nr=15)
