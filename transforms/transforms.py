@@ -360,3 +360,40 @@ class ColorJitter(object):
         transform = self.get_params(self.brightness, self.contrast,
                                     self.saturation, self.hue)
         return transform(img)
+
+class Scale(object):
+    """
+    Scale image such that longer side is == size
+    """
+
+    def __init__(self, size):
+        self.size = size
+
+    def __call__(self, img):
+        w, h = img.size
+
+        is_w_long = False
+        if w > h:
+            long_edge = w
+            is_w_long = True
+        else:
+            long_edge = h
+
+        if long_edge == self.size:
+            return img, mask
+
+        scale = self.size / long_edge
+
+        if is_w_long:
+            target_w = self.size
+            target_h = int(h * scale)
+            ##wj debug
+            if target_h == 1535:
+                target_h = 1536
+        else:
+            target_w = int(w * scale)
+            target_h = self.size
+
+        target_size = (target_w, target_h)
+
+        return img.resize(target_size, Image.BILINEAR)

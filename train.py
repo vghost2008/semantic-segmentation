@@ -335,6 +335,7 @@ def main():
     logx.initialize(logdir=args.result_dir,
                     tensorboard=True, hparams=vars(args),
                     global_rank=args.global_rank)
+    print(f"Result dir is {args.result_dir}")
 
     # Set up the Arguments, Tensorboard Writer, Dataloader, Loss Fn, Optimizer
     assert_and_infer_cfg(args)
@@ -432,6 +433,8 @@ def main():
     elif args.eval is not None:
         raise 'unknown eval option {}'.format(args.eval)
 
+    print(f"Start epoch {args.start_epoch}, max epoch {args.max_epoch}")
+
     for epoch in range(args.start_epoch, args.max_epoch):
         update_epoch(epoch)
 
@@ -458,6 +461,9 @@ def main():
             train_loader.sampler.set_epoch(epoch + 1)
 
         if epoch % args.val_freq == 0:
+            '''
+            In this function save ckpt
+            '''
             validate(val_loader, net, criterion_val, optim, epoch)
 
         scheduler.step()
@@ -487,6 +493,7 @@ def train(train_loader, net, optim, curr_epoch):
         # inputs = (bs,3,713,713)
         # gts    = (bs,713,713)
         images, gts, _img_name, scale_float = data
+        print("max gts:",torch.max(gts))
         batch_pixel_size = images.size(0) * images.size(2) * images.size(3)
         images, gts, scale_float = images.cuda(), gts.cuda(), scale_float.cuda()
         inputs = {'images': images, 'gts': gts}
@@ -594,6 +601,9 @@ def validate(val_loader, net, criterion, optim, epoch,
 
     was_best = False
     if calc_metrics:
+        '''
+        In this function will save ckpt
+        '''
         was_best = eval_metrics(iou_acc, args, net, optim, val_loss, epoch)
 
     # Write out a summary html page and tensorboard image table

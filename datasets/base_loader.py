@@ -58,11 +58,11 @@ class BaseLoader(data.Dataset):
         self.all_imgs = None
         self.drop_mask = np.zeros((1024, 2048))
         self.drop_mask[15:840, 14:2030] = 1.0
-        print("joint_transform_list:")
+        print(mode,"joint_transform_list:")
         print(joint_transform_list)
-        print("img transform:")
+        print(mode,"img transform:")
         print(img_transform)
-        print("label transform:")
+        print(mode,"label transform:")
         print(label_transform)
 
     def build_epoch(self):

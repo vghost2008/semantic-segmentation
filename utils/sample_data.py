@@ -20,10 +20,14 @@ def sample_dir(dir_path,save_dir,nr=10):
     
 
 def sample_dirs(dir_path,save_dir,nr=10):
+    dir_path = os.path.expanduser(dir_path)
+    save_dir = os.path.expanduser(save_dir)
     for f in os.listdir(dir_path):
         path = os.path.join(dir_path,f) 
         if os.path.isdir(path):
             sample_dir(path,save_dir,nr)
 
 if __name__ == "__main__":
-    sample_dirs("/home/wj/ai/mldata/txc_park_videos/videos_rgb","/home/wj/ai/mldata/txc_park_videos/videos_rgb_15",nr=15)
+    sample_dirs("~/ai/mldata/boesemantic/videos_tmp/",
+                "~/ai/mldata/boesemantic/videos_tmp_100",
+                nr=100)

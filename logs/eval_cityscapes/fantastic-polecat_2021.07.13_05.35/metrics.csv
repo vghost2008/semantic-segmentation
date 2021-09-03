@@ -22,3 +22,12 @@ start,start/step,0,timestamp,1626410284.4894402
 start,start/step,0,timestamp,1626411088.1285012
 val,loss,0.13682897390425205,mean_iu,0.8598529321755821,acc_cls,0.9234731604201593,acc,0.9738290729272308,epoch,0,timestamp,1626411356.881843
 start,start/step,0,timestamp,1626424684.1412516
+start,start/step,0,timestamp,1630477698.0078259
+start,start/step,0,timestamp,1630477786.971854
+start,start/step,0,timestamp,1630477838.6049778
+start,start/step,0,timestamp,1630478489.4414136
+val,loss,0.12458442696928979,mean_iu,0.8691891729591089,acc_cls,0.928073598050766,acc,0.9753867089150915,epoch,0,timestamp,1630478671.6849036
+start,start/step,0,timestamp,1630478964.4462929
+start,start/step,0,timestamp,1630482752.172115
+start,start/step,0,timestamp,1630485031.5252311
+start,start/step,0,timestamp,1630485166.7822406

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import division
 import torchvision.transforms as standard_transforms
+from transforms.transforms import Scale
 import os
 import sys
 import time
@@ -29,9 +30,9 @@ def save_mask(image_array,save_path):
     new_mask.save(save_path)
 
 def main():
-    img_path = 'example_imgs'
-    save_dir = 'logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folderx'
-    checkpoint_path = 'logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth'
+    img_path = '/home/wj/ai/mldata/boesemantic/videos_rgb_15'
+    save_dir = 'logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folderx_1'
+    checkpoint_path = 'logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep1.pth'
 
     cfg.MODEL.BNFUNC = torch.nn.BatchNorm2d
     cfg.DATASET.NUM_CLASSES = 27
@@ -54,7 +55,8 @@ def main():
     restore_net(net, checkpoint)
 
 
-    transforms = standard_transforms.Compose([standard_transforms.ToTensor(),
+    transforms = standard_transforms.Compose([Scale(1472),
+    standard_transforms.ToTensor(),
     standard_transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
     for val_idx, img_path in enumerate(all_imgs):
         torch.cuda.empty_cache()

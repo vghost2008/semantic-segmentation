@@ -153,6 +153,9 @@ def eval_metrics(iou_acc, args, net, optim, val_loss, epoch, mf_score=None):
         'mean_iu': mean_iu,
         'command': ' '.join(sys.argv[1:])
     }
+    '''
+    Save state dict (ckpt)
+    '''
     logx.save_model(save_dict, metric=mean_iu, epoch=epoch)
     torch.cuda.synchronize()
 

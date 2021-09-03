@@ -179,6 +179,9 @@ class RandomCrop(object):
 
         return self.crop_in_image(centroid, target_w, target_h, w, h,
                                   img, mask)
+    def __repr__(self):
+        return f"{type(self).__name__}: size="+str(self.size)
+
 
 
 class ResizeHeight(object):
@@ -302,8 +305,10 @@ class Scale(object):
         assert img.size == mask.size
         w, h = img.size
 
+        is_w_long = False
         if w > h:
             long_edge = w
+            is_w_long = True
         else:
             long_edge = h
 
@@ -311,8 +316,17 @@ class Scale(object):
             return img, mask
 
         scale = self.size / long_edge
-        target_w = int(w * scale)
-        target_h = int(h * scale)
+
+        if is_w_long:
+            target_w = self.size
+            target_h = int(h * scale)
+            ##wj debug
+            if target_h == 1535:
+                target_h = 1536
+        else:
+            target_w = int(w * scale)
+            target_h = self.size
+
         target_size = (target_w, target_h)
 
         return img.resize(target_size, Image.BILINEAR), \
@@ -471,6 +485,11 @@ class RandomSizeAndCrop(object):
         img_mask = self.crop(resized_img, resized_mask, centroid)
         img_mask.append(scale_amt)
         return img_mask
+
+    def __repr__(self):
+        return f"{type(self).__name__}: "+str(self.crop)+f", scale={self.scale_min},{self.scale_max}, is_full_size={self.full_size}"
+
+
 
 
 class SlidingCropOld(object):

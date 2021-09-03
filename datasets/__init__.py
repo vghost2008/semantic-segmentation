@@ -69,14 +69,24 @@ def setup_loaders(args):
         args.crop_size = [int(x) for x in args.crop_size.split(',')]
     else:
         args.crop_size = int(args.crop_size)
-    train_joint_transform_list = [
+
+    train_joint_transform_list = []
+    if 'boe-semantic-segmentation' in args.dataset:
+        if args.pre_size is None:
+            train_pre_size = 2048
+        else:
+            train_pre_size = args.pre_size
+    else:
+        train_pre_size = args.pre_size
+
+    train_joint_transform_list.append(
         # TODO FIXME: move these hparams into cfg
         joint_transforms.RandomSizeAndCrop(args.crop_size,
                                            False,
                                            scale_min=args.scale_min,
                                            scale_max=args.scale_max,
                                            full_size=args.full_crop_training,
-                                           pre_size=args.pre_size)]
+                                           pre_size=train_pre_size))
     train_joint_transform_list.append(
         joint_transforms.RandomHorizontallyFlip())
 
@@ -131,7 +141,7 @@ def setup_loaders(args):
                     joint_transforms.Scale(eval_size)]
     elif 'mapillary' in args.dataset:
         if args.pre_size is None:
-            eval_size = 2177
+            eval_size = 2048
         else:
             eval_size = args.pre_size
         if cfg.DATASET.MAPILLARY_CROP_VAL:
@@ -207,7 +217,8 @@ def setup_loaders(args):
             train_batch_size = args.bs_trn
         else:
             train_sampler = None
-            train_batch_size = args.bs_trn * args.ngpu
+            #train_batch_size = args.bs_trn * args.ngpu
+            train_batch_size = args.bs_trn
 
         train_loader = DataLoader(train_set, batch_size=train_batch_size,
                                   num_workers=args.num_workers,

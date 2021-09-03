@@ -1,0 +1,1 @@
+train.py --dataset boe-semantic-segmentation --cv 0 --bs_val 1 --eval folder --dump_assets --dump_all_images --n_scales 0.5,1.0,2.0 --snapshot logs/train_boe/ocrnet.HRNet_Mscale_honored-boe/last_checkpoint_ep19.pth --arch ocrnet.HRNet_Mscale --result_dir logs/eval_boe/ocrnet.HRNet_Mscale_honored-boe_folder1 --eval_folder /home/wj/ai/mldata/DETRAC/Insight-MVT_Annotation_Train_4

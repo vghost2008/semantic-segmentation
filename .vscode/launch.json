@@ -38,23 +38,23 @@
             "args":["--dataset" "cityscapes" "--cv" "0" "--crop_size" "1024,2048" "--bs_trn" "1" "--poly_exp" "2" "--lr" "5e-3" "--rmi_loss" "--max_epoch" "175" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/ocrnet.HRNet_industrious-chicken.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_cityscapes/ocrnet.HRNet_Mscale_proud-sidewinder_2021.07.16_08.26"]
         },
         {
-            "name": "Python: Training test1",
+            "name": "Python: Training mapillary",
             "type": "python",
-            "justMyCode": false,
+            "justMyCode": true,
             "request": "launch",
             "program": "train.py",
             "console": "integratedTerminal",
-            "args":["--dataset" "mapillary" "--cv" "0" "--crop_size" "1024,2048" "--bs_trn" "1" "--poly_exp" "2" "--lr" "5e-3" "--rmi_loss" "--max_epoch" "175" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/ocrnet.HRNet_industrious-chicken.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_cityscapes/ocrnet.HRNet_Mscale_proud-sidewinder_2021.07.16_08.26"]
+            "args":["--dataset" "mapillary" "--cv" "0" "--crop_size" "512,1024" "--bs_trn" "1" "--poly_exp" "2" "--lr" "5e-3" "--rmi_loss" "--max_epoch" "175" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/ocrnet.HRNet_industrious-chicken.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_cityscapes/ocrnet.HRNet_Mscale_proud-sidewinder_2021.07.16_08.26"]
         },
         {
             "name": "Python: Training boe",
             "type": "python",
             "justMyCode": false,
             "request": "launch",
-            "program": "finetune_train.py",
+            "program": "finetune_trainv2.py",
             "console": "integratedTerminal",
-            "args":["--dataset" "mapillary" "--cv" "0" "--crop_size" "1024,2048" "--bs_trn" "1" "--poly_exp" "2" "--lr" "1e-3" "--rmi_loss" "--max_epoch" "20" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/mapillary_ocrnet.HRNet_Mscale_fast-rattlesnake.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_boe1/ocrnet.HRNet_Mscale_proud-sidewinder_2021.07.26_08.26"]
-            //"args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--crop_size" "1024,2048" "--bs_trn" "1" "--poly_exp" "2" "--lr" "1e-3" "--rmi_loss" "--max_epoch" "20" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/mapillary_ocrnet.HRNet_Mscale_fast-rattlesnake.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_boe/ocrnet.HRNet_Mscale_proud-sidewinder_2021.07.26_08.26"]
+            //"args":["--dataset" "mapillary" "--cv" "0" "--crop_size" "1024,2048" "--bs_trn" "1" "--poly_exp" "2" "--lr" "1e-3" "--rmi_loss" "--max_epoch" "20" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/mapillary_ocrnet.HRNet_Mscale_fast-rattlesnake.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_boe1/ocrnet.HRNet_Mscale_proud-sidewinder_2021.07.26_08.26"]
+            "args":["--dataset" "boe-semantic-segmentation" "--cv" "0" "--crop_size" "1024,2048" "--bs_trn" "1" "--poly_exp" "2" "--lr" "1e-3" "--rmi_loss" "--max_epoch" "20" "--n_scales" "0.5,1.0,2.0" "--supervised_mscale_loss_wt" "0.05" "--snapshot" "ASSETS_PATH/seg_weights/mapillary_ocrnet.HRNet_Mscale_fast-rattlesnake.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/train_boe/ocrnet.HRNet_Mscale_proud-sidewinder_test1"]
         },
         {
             "name": "Python: Inference",
@@ -62,8 +62,8 @@
             "request": "launch",
             "program": "test.py",
             "console": "integratedTerminal",
+            "args":["--dataset" "mapillary" "--cv" "0" "--bs_val" "1" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
             //"args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
-            "args":["--dataset" "cityscapes" "--cv" "0" "--bs_val" "2" "--eval" "val" "--n_scales" "0.5,1.0,2.0" "--snapshot" "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth" "--arch" "ocrnet.HRNet_Mscale" "--result_dir" "logs/eval_cityscapes/fantastic-polecat_2021.07.13_05.35"]
         },
         {
             "name": "Python: Inference boe",

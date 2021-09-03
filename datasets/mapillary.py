@@ -39,6 +39,13 @@ from datasets.base_loader import BaseLoader
 from datasets.utils import make_dataset_folder
 from datasets import uniform
 
+'''
+wjn
+When calculate loss and mean iou, we simply ignore gtlabels>=num_classes
+for example:
+    utils/misc.py:25
+    loss/rmi.py:91
+'''
 
 class Loader(BaseLoader):
     num_classes = 65

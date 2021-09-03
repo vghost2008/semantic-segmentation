@@ -107,6 +107,19 @@ class Loader(BaseLoader):
             mask_root = os.path.join(root, split_name, 'boe_labels')
             self.all_imgs = self.find_images(img_root, mask_root, img_ext,
                                              mask_ext)
+            print(f"Find images1 {len(self.all_imgs)}")
+            all_imgs_2 = self.find_images("/home/wj/ai/mldata/boesemantic/boe_labels",
+                                          "/home/wj/ai/mldata/boesemantic/boe_labels",
+                                          img_ext,
+                                          mask_ext)
+            print(f"Find images2 {len(all_imgs_2)}")
+            all_imgs_2 = all_imgs_2*10
+            if mode == "train":
+                self.all_imgs = all_imgs_2 +self.all_imgs
+            else:
+                pass
+            print(f"Find all images {len(self.all_imgs)}")
+
         logx.msg('all imgs {}'.format(len(self.all_imgs)))
         self.centroids = uniform.build_centroids(self.all_imgs,
                                                  self.num_classes,

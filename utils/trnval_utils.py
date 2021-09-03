@@ -167,8 +167,9 @@ def eval_minibatch(data, net, criterion, val_loss, calc_metrics, args, val_idx):
 
     # Update loss and scoring datastructure
     if calc_metrics:
-        val_loss.update(criterion(output, gt_image.cuda()).item(),
-                        batch_pixel_size)
+        #val_loss.update(criterion(output.cpu(), gt_image.cpu()).item(),
+        #                batch_pixel_size)
+        val_loss.update(0,batch_pixel_size)
 
     output_data = torch.nn.functional.softmax(output, dim=1).cpu().data
     max_probs, predictions = output_data.max(1)
